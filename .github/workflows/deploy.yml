@@ -23,10 +23,11 @@ jobs:
 
       - name: Deploy to EC2
         run: |
-          scp -i key.pem -o StrictHostKeyChecking=no Dockerfile ubuntu@${{ secrets.EC2_HOST }}:/home/ubuntu/
+          scp -i key.pem -o StrictHostKeyChecking=no -r . ubuntu@${{ secrets.EC2_HOST }}:/home/ubuntu/app
           ssh -i key.pem -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
-            docker stop myapp || true
-            docker rm myapp || true
-            docker build -t myapp .
-            docker run -d -p 80:3000 --name myapp myapp
-          EOF
+  cd app
+  docker stop myapp || true
+  docker rm myapp || true
+  docker build -t myapp .
+  docker run -d -p 80:3000 --name myapp myapp
+EOF
